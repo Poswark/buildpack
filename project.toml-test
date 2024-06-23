@@ -1,0 +1,10 @@
+[build]
+  include = ["app.py", "requirements.txt", "Procfile"]
+
+[[build.env]]
+  name = "BP_LAUNCH_USER"
+  value = "userpy"
+
+[[build.env]]
+  name = "BP_LAUNCH_SHELL"
+  value = "/bin/bash"
