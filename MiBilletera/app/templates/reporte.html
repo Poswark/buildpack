@@ -1,0 +1,597 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiBilletera | Control Financiero Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-color: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --secondary-color: #8b5cf6;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --header-bg: #1e293b;
+            --hover-bg: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent-color: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #ec4899, #fb7185);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --glass-bg: rgba(30, 41, 59, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            --card-radius: 20px;
+            --input-radius: 12px;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background-color: var(--header-bg);
+            color: var(--text-primary);
+            border-bottom: none;
+            border-radius: 16px 16px 0 0 !important;
+            padding: 20px 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header i {
+            margin-right: 12px;
+            font-size: 1.2em;
+            color: var(--accent-color);
+        }
+        
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            padding: 8px;
+            margin-bottom: 35px;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: white !important;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .nav-link:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary) !important;
+        }
+        
+        .nav-link i {
+            font-size: 18px;
+        }
+        
+        /* Month Navigation */
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            padding: 12px 25px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .month-nav h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .page-title {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        }
+        
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+            color: var(--text-primary);
+        }
+        
+        /* Business report specific styles */
+        .business-section {
+            margin-bottom: 30px;
+        }
+        
+        .business-card {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .balance-table th, .balance-table td {
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .balance-table th {
+            background-color: var(--header-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        .balance-chart {
+            height: 200px;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .report-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            
+            .navbar, .report-actions {
+                display: none;
+            }
+            
+            .card {
+                border: 1px solid #ddd;
+                box-shadow: none;
+            }
+            
+            .card-header {
+                background-color: #f8f9fa;
+                color: #333;
+            }
+            
+            .balance-table th {
+                background-color: #f8f9fa;
+                color: #333;
+            }
+            
+            .balance-table td {
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-bubble"></div>
+        <div class="bg-bubble"></div>
+        <div class="bg-bubble"></div>
+        <div class="bg-bubble"></div>
+    </div>
+    
+    <div class="container">
+        <!-- App Header -->
+
+    <!-- Barra de navegación en español con iconos -->
+        <!-- Navbar Mejorada -->
+        <nav class="navbar navbar-expand">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">
+                                <i class="fas fa-home"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/mes">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Mes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Dian</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/reporte">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Reporte</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/contacto">
+                                <i class="fas fa-circle-user"></i>
+                                <span>Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Salir</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+    <div class="container">
+        <h1 class="page-title">Reporte de Negocios</h1>
+        
+        <div class="report-info mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h5 class="card-title mb-0">Información del Reporte</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Fecha:</strong> {{ report.date }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Usuario:</strong> {{ report.user }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>ID del Reporte:</strong> {{ report._id }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="business-section">
+            <div class="card business-card">
+                <div class="card-header">
+                    <i class="fas fa-building"></i>
+                    <h5 class="card-title mb-0">Negocio 1</h5>
+                </div>
+                <div class="card-body">
+                    <table class="balance-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Debo</td>
+                                <td>${{ report.business1.owe }}</td>
+                            </tr>
+                            <tr>
+                                <td>They owe me</td>
+                                <td>${{ report.business1.owed }}</td>
+                            </tr>
+                            <tr class="table-active">
+                                <td><strong>Balance</strong></td>
+                                <td><strong>${{ report.business1.balance }}</strong></td>
+                            </tr>
+                            <tr class="table-active">
+                                <td><strong>Deuda</strong></td>
+                                <td><strong>${{ report.business1.deuda }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="balance-chart">
+                        <canvas id="business1Chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="business-section">
+            <div class="card business-card">
+                <div class="card-header">
+                    <i class="fas fa-building"></i>
+                    <h5 class="card-title mb-0">Negocio 2</h5>
+                </div>
+                <div class="card-body">
+                    <table class="balance-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>I owe money</td>
+                                <td>${{ report.business2.owe }}</td>
+                            </tr>
+                            <tr>
+                                <td>They owe me</td>
+                                <td>${{ report.business2.owed }}</td>
+                            </tr>
+                            <tr class="table-active">
+                                <td><strong>Balance</strong></td>
+                                <td><strong>${{ report.business2.balance }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="balance-chart">
+                        <canvas id="business2Chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-actions">
+            <button id="saveReportBtn" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Guardar Reporte
+            </button>
+            <button id="downloadPdfBtn" class="btn btn-primary">
+                <a href="/download_report/{{ report._id }}" class="btn btn-outline-light">
+                <i class="fas fa-file-pdf me-2"></i>Descargar PDF 
+            </a>
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar gráficos
+            setupCharts();
+            
+            // Botón para guardar el reporte
+            document.getElementById('saveReportBtn').addEventListener('click', function() {
+                fetch('/save_report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        report_id: '{{ report._id }}'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Reporte guardado exitosamente');
+                    } else {
+                        alert('Error al guardar el reporte: ' + data.message);
+                    }
+                });
+            });
+            
+            // Botón para descargar PDF
+                document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                
+                const element = document.querySelector('.container');
+                
+                html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 210; // A4 width in mm
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    
+                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                    doc.save('ReportID-{{ report._id }}.pdf');
+                });
+            });
+        });
+        function setupCharts() {
+            // Gráfico para Negocio 1
+            const ctx1 = document.getElementById('business1Chart').getContext('2d');
+            const business1Chart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Balance',
+                        data: {{ report.business1.chart_data|tojson }},
+                        borderColor: '#56B4D3',
+                        backgroundColor: 'rgba(86, 180, 211, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico para Negocio 2
+            const ctx2 = document.getElementById('business2Chart').getContext('2d');
+            const business2Chart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Balance',
+                        data: {{ report.business2.chart_data|tojson }},
+                        borderColor: '#FF8A80',
+                        backgroundColor: 'rgba(255, 138, 128, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

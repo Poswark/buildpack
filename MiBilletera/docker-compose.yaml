@@ -1,0 +1,41 @@
+services:
+  # MongoDB service
+  mongodb:
+    container_name: mongodb
+    platform: linux/arm64
+    image: arm64v8/mongo:6
+    ports:
+      - '27017:27017'
+    env_file:
+      - .env
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - expense-tracker-network
+
+  # Expense Tracker application
+  mibilletera:
+    build: .
+    container_name: MiBilletera-backend
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    ports:
+      - "5050:5000"
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - .:/code/
+    restart: unless-stopped
+    networks:
+      - expense-tracker-network
+
+# Volumes definition
+volumes:
+  mongodb_data:
+
+# Networks definition
+networks:
+  expense-tracker-network:
